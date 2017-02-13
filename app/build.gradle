@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion "25.0.2"
+  defaultConfig {
+    applicationId "com.yuki312.orientationsample"
+    minSdkVersion 16
+    targetSdkVersion 25
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    vectorDrawables.useSupportLibrary = true
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  packagingOptions {
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/services/javax.annotation.processing.Processor'
+  }
+  dexOptions {
+    preDexLibraries true
+    javaMaxHeapSize "4g"
+  }
+  dataBinding {
+    enabled = true
+  }
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    exclude group: 'com.android.support', module: 'support-annotations'
+    exclude group: 'com.google.code.findbugs', module: 'jsr305'
+  })
+
+  compile 'com.android.support:appcompat-v7:25.1.1'
+  compile 'com.android.support:support-v4:25.1.1'
+  compile 'com.android.support:support-vector-drawable:25.1.1'
+  compile 'io.reactivex.rxjava2:rxjava:2.0.5'
+  compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
+  compile 'com.trello.rxlifecycle2:rxlifecycle-android:2.0.1'
+  compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
+  compile 'com.rejasupotaro:kvs-schema:5.0.1'
+  compile 'org.greenrobot:eventbus:3.0.0'
+  compile 'com.android.support:design:25.1.1'
+  testCompile 'junit:junit:4.12'
+  apt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
+  apt 'com.rejasupotaro:kvs-schema-compiler:5.0.1'
+}
+
+apt {
+  arguments {
+    eventBusIndex "com.yuki312.orientationsample.MyEventBusIndex"
+  }
+}
