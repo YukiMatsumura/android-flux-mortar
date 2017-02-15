@@ -3,18 +3,31 @@ package com.yuki312.orientationsample.main;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.widget.Toast;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-import com.yuki312.orientationsample.App;
 import com.yuki312.orientationsample.R;
+import com.yuki312.orientationsample.core.di.DaggerAppComponent;
+import com.yuki312.orientationsample.core.di.DaggerService;
+import com.yuki312.orientationsample.main.MainComponent.MainModule;
 import com.yuki312.orientationsample.databinding.ActivityMainBinding;
 import com.yuki312.orientationsample.setting.SettingActivity;
+import com.yuki312.orientationsample.setting.SettingStore;
+import java.util.List;
+import javax.inject.Inject;
+import mortar.MortarScope;
+
+import static mortar.MortarScope.buildChild;
+import static mortar.MortarScope.findChild;
 
 public class MainActivity extends RxAppCompatActivity {
+
+  public static final String SCOPE_NAME = MainActivity.class.getName();
+
+  @Inject SettingStore settingStore;
+  @Inject List<String> log;
 
   public static void startActivity(@NonNull Context context) {
     context.startActivity(new Intent(context, MainActivity.class));
@@ -22,24 +35,40 @@ public class MainActivity extends RxAppCompatActivity {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Log.e("TEST", "onCreate");
 
     ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     binding.button.setOnClickListener(v -> SettingActivity.startActivity(this));
 
-    App.settingStore(this).rotate().compose(bindToLifecycle()).subscribe(on -> {
+    // DI
+    DaggerService.<MainComponent>getDaggerComponent(this).inject(this);
+
+    // 画面回転の設定値が変更されたらそれに従ったOrientation値をリクエストする.
+    settingStore.rotate().compose(bindToLifecycle()).subscribe(on -> {
       setRequestedOrientation(on ? ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
           : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
     });
-  }
 
-  @Override public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-    Log.e("TEST", "onConfigurationChanged");
+    log.add(this.toString());
+    Toast.makeText(this, "log=" + log.size() + " fm." + this, Toast.LENGTH_SHORT).show();
   }
 
   @Override protected void onDestroy() {
+    if (isFinishing()) {
+      MortarScope activityScope = findChild(getApplicationContext(), SCOPE_NAME);
+      if (activityScope != null) activityScope.destroy();
+    }
     super.onDestroy();
-    Log.e("TEST", "onDestroy");
+  }
+
+  @Override public Object getSystemService(@NonNull String name) {
+    MortarScope scenarioScope = findChild(getApplicationContext(), SCOPE_NAME);
+    if (scenarioScope == null) {
+      scenarioScope = buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME,
+          DaggerService.<DaggerAppComponent>getDaggerComponent(getApplicationContext()).plus(
+              new MainModule())).build(SCOPE_NAME);
+    }
+
+    return scenarioScope.hasService(name) ? scenarioScope.getService(name)
+        : super.getSystemService(name);
   }
 }

@@ -1,7 +1,8 @@
-package com.yuki312.orientationsample;
+package com.yuki312.orientationsample.launch;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import com.yuki312.orientationsample.R;
 import com.yuki312.orientationsample.main.MainActivity;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

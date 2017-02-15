@@ -1,4 +1,4 @@
-package com.yuki312.orientationsample.core;
+package com.yuki312.orientationsample.core.flux;
 
 import android.support.annotation.NonNull;
 

@@ -1,11 +1,11 @@
 package com.yuki312.orientationsample;
 
 import android.app.Application;
-import android.content.Context;
-import android.support.annotation.NonNull;
-import com.yuki312.orientationsample.core.Dispatcher;
-import com.yuki312.orientationsample.setting.SettingActionCreator;
-import com.yuki312.orientationsample.setting.SettingStore;
+import com.yuki312.orientationsample.core.di.AppComponent;
+import com.yuki312.orientationsample.core.di.AppComponent.AppModule;
+import com.yuki312.orientationsample.core.di.DaggerAppComponent;
+import com.yuki312.orientationsample.core.di.DaggerService;
+import mortar.MortarScope;
 
 /**
  * Created by Yuki312 on 2017/02/10.
@@ -13,32 +13,20 @@ import com.yuki312.orientationsample.setting.SettingStore;
 
 public class App extends Application {
 
-  private Dispatcher dispatcher;
+  public static final String SCOPE_NAME = App.class.getName();
 
-  private SettingActionCreator actionCreator;
-
-  private SettingStore setting;
+  private MortarScope rootScope;
 
   @Override public void onCreate() {
     super.onCreate();
 
-    dispatcher = new Dispatcher();
-    actionCreator = new SettingActionCreator(dispatcher);
-    setting = new SettingStore(getApplicationContext(), dispatcher);
+    AppComponent appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+    rootScope = MortarScope.buildRootScope()
+        .withService(DaggerService.SERVICE_NAME, appComponent)
+        .build(App.SCOPE_NAME);
   }
 
-  // TODO: replace Singleton component with Dagger2
-  public static Dispatcher dispatcher(@NonNull Context context) {
-    return ((App) context.getApplicationContext()).dispatcher;
-  }
-
-  // TODO: replace Singleton component with Dagger2
-  public static SettingActionCreator settingActionCreator(@NonNull Context context) {
-    return ((App) context.getApplicationContext()).actionCreator;
-  }
-
-  // TODO: replace Singleton component with Dagger2
-  public static SettingStore settingStore(@NonNull Context context) {
-    return ((App) context.getApplicationContext()).setting;
+  @Override public Object getSystemService(String name) {
+    return rootScope.hasService(name) ? rootScope.getService(name) : super.getSystemService(name);
   }
 }

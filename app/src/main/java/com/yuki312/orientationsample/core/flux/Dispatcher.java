@@ -1,4 +1,4 @@
-package com.yuki312.orientationsample.core;
+package com.yuki312.orientationsample.core.flux;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;

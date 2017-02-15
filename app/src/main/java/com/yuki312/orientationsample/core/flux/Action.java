@@ -1,6 +1,4 @@
-package com.yuki312.orientationsample.core;
-
-import android.support.annotation.NonNull;
+package com.yuki312.orientationsample.core.flux;
 
 /**
  * Created by Yuki312 on 2017/02/12.

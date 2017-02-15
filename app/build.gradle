@@ -52,16 +52,11 @@ dependencies {
   compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
   compile 'com.trello.rxlifecycle2:rxlifecycle-android:2.0.1'
   compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
+  compile 'com.squareup.mortar:mortar:0.20'
   compile 'com.rejasupotaro:kvs-schema:5.0.1'
-  compile 'org.greenrobot:eventbus:3.0.0'
   compile 'com.android.support:design:25.1.1'
+  compile 'com.google.dagger:dagger:2.8'
   testCompile 'junit:junit:4.12'
-  apt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
+  apt 'com.google.dagger:dagger-compiler:2.8'
   apt 'com.rejasupotaro:kvs-schema-compiler:5.0.1'
-}
-
-apt {
-  arguments {
-    eventBusIndex "com.yuki312.orientationsample.MyEventBusIndex"
-  }
 }
