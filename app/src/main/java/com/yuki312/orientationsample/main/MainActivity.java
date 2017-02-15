@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.yuki312.orientationsample.R;
-import com.yuki312.orientationsample.core.di.DaggerAppComponent;
 import com.yuki312.orientationsample.core.di.DaggerService;
 import com.yuki312.orientationsample.main.MainComponent.MainModule;
 import com.yuki312.orientationsample.databinding.ActivityMainBinding;
@@ -40,7 +39,7 @@ public class MainActivity extends RxAppCompatActivity {
     binding.button.setOnClickListener(v -> SettingActivity.startActivity(this));
 
     // DI
-    DaggerService.<MainComponent>getDaggerComponent(this).inject(this);
+    DaggerService.<MainComponent>getComponent(this).injectMembers(this);
 
     // 画面回転の設定値が変更されたらそれに従ったOrientation値をリクエストする.
     settingStore.rotate().compose(bindToLifecycle()).subscribe(on -> {
@@ -63,9 +62,13 @@ public class MainActivity extends RxAppCompatActivity {
   @Override public Object getSystemService(@NonNull String name) {
     MortarScope scenarioScope = findChild(getApplicationContext(), SCOPE_NAME);
     if (scenarioScope == null) {
-      scenarioScope = buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME,
-          DaggerService.<DaggerAppComponent>getDaggerComponent(getApplicationContext()).plus(
-              new MainModule())).build(SCOPE_NAME);
+      MainComponent mainComponent =
+          DaggerService.<MainComponent.Builder>getComponentBuilder(this, MainActivity.class)
+              .activityModule(new MainModule())
+              .build();
+      scenarioScope =
+          buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME, mainComponent)
+              .build(SCOPE_NAME);
     }
 
     return scenarioScope.hasService(name) ? scenarioScope.getService(name)

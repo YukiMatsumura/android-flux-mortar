@@ -1,10 +1,14 @@
 package com.yuki312.orientationsample;
 
+import android.app.Activity;
 import android.app.Application;
 import com.yuki312.orientationsample.core.di.AppComponent;
+import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
 import com.yuki312.orientationsample.core.di.AppComponent.AppModule;
 import com.yuki312.orientationsample.core.di.DaggerAppComponent;
 import com.yuki312.orientationsample.core.di.DaggerService;
+import java.util.Map;
+import javax.inject.Inject;
 import mortar.MortarScope;
 
 /**
@@ -21,6 +25,7 @@ public class App extends Application {
     super.onCreate();
 
     AppComponent appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+    appComponent.inject(this);
     rootScope = MortarScope.buildRootScope()
         .withService(DaggerService.SERVICE_NAME, appComponent)
         .build(App.SCOPE_NAME);

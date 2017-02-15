@@ -1,5 +1,8 @@
 package com.yuki312.orientationsample.main;
 
+import com.yuki312.orientationsample.core.di.ActivityComponent;
+import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
+import com.yuki312.orientationsample.core.di.ActivityModule;
 import com.yuki312.orientationsample.core.di.ScenarioScope;
 import dagger.Module;
 import dagger.Provides;
@@ -13,12 +16,14 @@ import java.util.List;
 
 @ScenarioScope
 @Subcomponent(modules = MainComponent.MainModule.class)
-public interface MainComponent {
+public interface MainComponent extends ActivityComponent<MainActivity> {
 
-  void inject(MainActivity activity);
+  @Subcomponent.Builder
+  interface Builder extends ActivityComponentBuilder<MainModule, MainComponent> {
+  }
 
   @Module
-  class MainModule {
+  class MainModule extends ActivityModule {
 
     private List<String> scenarioLog;
 
