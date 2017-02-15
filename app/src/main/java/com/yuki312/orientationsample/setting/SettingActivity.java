@@ -11,6 +11,8 @@ import com.yuki312.orientationsample.R;
 import com.yuki312.orientationsample.core.di.DaggerAppComponent;
 import com.yuki312.orientationsample.core.di.DaggerService;
 import com.yuki312.orientationsample.databinding.ActivitySubBinding;
+import com.yuki312.orientationsample.main.MainActivity;
+import com.yuki312.orientationsample.main.MainComponent;
 import com.yuki312.orientationsample.setting.SettingComponent.SettingModule;
 import java.util.List;
 import javax.inject.Inject;
@@ -37,7 +39,7 @@ public class SettingActivity extends RxAppCompatActivity {
     ActivitySubBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_sub);
 
     // DI
-    DaggerService.<SettingComponent>getDaggerComponent(this).inject(this);
+    DaggerService.<SettingComponent>getComponent(this).injectMembers(this);
 
     settingStore.rotate().compose(bindToLifecycle()).subscribe(binding::setRotation);
 
@@ -59,9 +61,11 @@ public class SettingActivity extends RxAppCompatActivity {
   @Override public Object getSystemService(@NonNull String name) {
     MortarScope scenarioScope = findChild(getApplicationContext(), SCOPE_NAME);
     if (scenarioScope == null) {
+      SettingComponent settingComponent =
+          DaggerService.<SettingComponent.Builder>getComponentBuilder(this,
+              SettingActivity.class).activityModule(new SettingModule()).build();
       scenarioScope = buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME,
-          DaggerService.<DaggerAppComponent>getDaggerComponent(getApplicationContext()).plus(
-              new SettingModule())).build(SCOPE_NAME);
+          settingComponent).build(SCOPE_NAME);
     }
 
     return scenarioScope.hasService(name) ? scenarioScope.getService(name)

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.yuki312.orientationsample.App;
 import com.yuki312.orientationsample.core.flux.Dispatcher;
-import com.yuki312.orientationsample.main.MainComponent;
-import com.yuki312.orientationsample.setting.SettingComponent;
 import com.yuki312.orientationsample.setting.SettingStore;
 import dagger.Component;
 import dagger.Module;
@@ -17,14 +15,12 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-@Component(modules = AppComponent.AppModule.class)
+@Component(modules = { AppComponent.AppModule.class, ActivityBindingModule.class })
 public interface AppComponent {
 
   App application();
 
-  MainComponent plus(MainComponent.MainModule module);
-
-  SettingComponent plus(SettingComponent.SettingModule module);
+  void inject(App app);
 
   @Module
   class AppModule {
