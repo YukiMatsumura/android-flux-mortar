@@ -10,8 +10,8 @@ import android.widget.Toast;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.yuki312.orientationsample.R;
 import com.yuki312.orientationsample.core.di.DaggerService;
-import com.yuki312.orientationsample.main.MainComponent.MainModule;
 import com.yuki312.orientationsample.databinding.ActivityMainBinding;
+import com.yuki312.orientationsample.main.MainComponent.MainModule;
 import com.yuki312.orientationsample.setting.SettingActivity;
 import com.yuki312.orientationsample.setting.SettingStore;
 import java.util.List;
@@ -63,9 +63,8 @@ public class MainActivity extends RxAppCompatActivity {
     MortarScope scenarioScope = findChild(getApplicationContext(), SCOPE_NAME);
     if (scenarioScope == null) {
       MainComponent mainComponent =
-          DaggerService.<MainComponent.Builder>getComponentBuilder(this, MainActivity.class)
-              .activityModule(new MainModule())
-              .build();
+          DaggerService.<MainComponent.Builder>getComponentBuilder(this).activityModule(
+              new MainModule()).build();
       scenarioScope =
           buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME, mainComponent)
               .build(SCOPE_NAME);

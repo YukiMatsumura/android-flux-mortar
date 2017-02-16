@@ -2,12 +2,15 @@ package com.yuki312.orientationsample;
 
 import android.app.Activity;
 import android.app.Application;
-import com.yuki312.orientationsample.core.di.AppComponent;
 import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
+import com.yuki312.orientationsample.core.di.AppComponent;
 import com.yuki312.orientationsample.core.di.AppComponent.AppModule;
 import com.yuki312.orientationsample.core.di.DaggerAppComponent;
 import com.yuki312.orientationsample.core.di.DaggerService;
-import java.util.Map;
+import com.yuki312.orientationsample.main.MainActivity;
+import com.yuki312.orientationsample.main.MainComponent;
+import com.yuki312.orientationsample.setting.SettingActivity;
+import com.yuki312.orientationsample.setting.SettingComponent;
 import javax.inject.Inject;
 import mortar.MortarScope;
 
@@ -19,7 +22,8 @@ public class App extends Application {
 
   public static final String SCOPE_NAME = App.class.getName();
 
-  @Inject Map<Class<? extends Activity>, ActivityComponentBuilder> activityComponentBuilder;
+  @Inject MainComponent.Builder mainComponentBuilder;
+  @Inject SettingComponent.Builder settingComponentBuilder;
 
   private MortarScope rootScope;
 
@@ -37,7 +41,11 @@ public class App extends Application {
     return rootScope.hasService(name) ? rootScope.getService(name) : super.getSystemService(name);
   }
 
-  public ActivityComponentBuilder activityComponentBuilder(Class<? extends Activity> activity) {
-    return activityComponentBuilder.get(activity);
+  public MainComponent.Builder activityComponentBuilder(MainActivity activity) {
+    return mainComponentBuilder;
+  }
+
+  public SettingComponent.Builder activityComponentBuilder(SettingActivity activity) {
+    return settingComponentBuilder;
   }
 }

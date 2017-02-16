@@ -3,16 +3,13 @@ package com.yuki312.orientationsample.setting;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.yuki312.orientationsample.R;
-import com.yuki312.orientationsample.core.di.DaggerAppComponent;
 import com.yuki312.orientationsample.core.di.DaggerService;
 import com.yuki312.orientationsample.databinding.ActivitySubBinding;
-import com.yuki312.orientationsample.main.MainActivity;
-import com.yuki312.orientationsample.main.MainComponent;
 import com.yuki312.orientationsample.setting.SettingComponent.SettingModule;
 import java.util.List;
 import javax.inject.Inject;
@@ -62,8 +59,8 @@ public class SettingActivity extends RxAppCompatActivity {
     MortarScope scenarioScope = findChild(getApplicationContext(), SCOPE_NAME);
     if (scenarioScope == null) {
       SettingComponent settingComponent =
-          DaggerService.<SettingComponent.Builder>getComponentBuilder(this,
-              SettingActivity.class).activityModule(new SettingModule()).build();
+          DaggerService.<SettingComponent.Builder>getComponentBuilder(this).activityModule(
+              new SettingModule()).build();
       scenarioScope = buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME,
           settingComponent).build(SCOPE_NAME);
     }

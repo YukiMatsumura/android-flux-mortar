@@ -5,7 +5,7 @@ import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
 import com.yuki312.orientationsample.core.di.ActivityModule;
 import com.yuki312.orientationsample.core.di.ScenarioScope;
 import com.yuki312.orientationsample.core.flux.Dispatcher;
-import com.yuki312.orientationsample.main.MainActivity;
+import com.yuki312.orientationsample.main.MainComponent;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;
@@ -21,13 +21,21 @@ import java.util.List;
 public interface SettingComponent extends ActivityComponent<SettingActivity> {
 
   @Subcomponent.Builder
-  interface Builder extends ActivityComponentBuilder<SettingModule, SettingComponent> {
+  interface Builder {
+    Builder activityModule(SettingModule module);
+
+    SettingComponent build();
   }
 
   @Module
   class SettingModule extends ActivityModule {
 
     private List<String> scenarioLog;
+
+    @ScenarioScope @Provides public SettingComponent.Builder settingActivityComponentBuilder(
+        SettingComponent.Builder builder) {
+      return builder;
+    }
 
     public SettingModule() {
       scenarioLog = new ArrayList<>();

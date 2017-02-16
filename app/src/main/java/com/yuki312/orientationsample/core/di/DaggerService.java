@@ -3,6 +3,10 @@ package com.yuki312.orientationsample.core.di;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.yuki312.orientationsample.main.MainActivity;
+import com.yuki312.orientationsample.main.MainComponent;
+import com.yuki312.orientationsample.setting.SettingActivity;
+import com.yuki312.orientationsample.setting.SettingComponent;
 
 /**
  * Created by YukiMatsumura on 2017/02/15.
@@ -18,10 +22,16 @@ public class DaggerService {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T extends ActivityComponentBuilder> T getComponentBuilder(@NonNull Context context,
-      Class<? extends Activity> activity) {
+  public static MainComponent.Builder getComponentBuilder(@NonNull MainActivity activity) {
     // noinspection ResourceType
-    return (T) ((AppComponent) context.getApplicationContext()
+    return (MainComponent.Builder) ((AppComponent) activity.getApplicationContext()
+        .getSystemService(SERVICE_NAME)).application().activityComponentBuilder(activity);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static SettingComponent.Builder getComponentBuilder(@NonNull SettingActivity activity) {
+    // noinspection ResourceType
+    return (SettingComponent.Builder) ((AppComponent) activity.getApplicationContext()
         .getSystemService(SERVICE_NAME)).application().activityComponentBuilder(activity);
   }
 }

@@ -19,11 +19,19 @@ import java.util.List;
 public interface MainComponent extends ActivityComponent<MainActivity> {
 
   @Subcomponent.Builder
-  interface Builder extends ActivityComponentBuilder<MainModule, MainComponent> {
+  interface Builder {
+    Builder activityModule(MainModule module);
+
+    MainComponent build();
   }
 
   @Module
   class MainModule extends ActivityModule {
+
+    @ScenarioScope @Provides
+    public MainComponent.Builder mainActivityComponentBuilder(MainComponent.Builder builder) {
+      return builder;
+    }
 
     private List<String> scenarioLog;
 
