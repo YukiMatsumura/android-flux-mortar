@@ -63,9 +63,8 @@ public class MainActivity extends RxAppCompatActivity {
     MortarScope scenarioScope = findChild(getApplicationContext(), SCOPE_NAME);
     if (scenarioScope == null) {
       MainComponent mainComponent =
-          DaggerService.<MainComponent.Builder>getComponentBuilder(this, MainActivity.class)
-              .activityModule(new MainModule())
-              .build();
+          DaggerService.<MainComponent.Builder>getComponentBuilder(this).activityModule(
+              new MainModule(this)).build();
       scenarioScope =
           buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME, mainComponent)
               .build(SCOPE_NAME);

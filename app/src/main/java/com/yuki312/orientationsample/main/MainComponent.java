@@ -23,11 +23,12 @@ public interface MainComponent extends ActivityComponent<MainActivity> {
   }
 
   @Module
-  class MainModule extends ActivityModule {
+  class MainModule extends ActivityModule<MainActivity> {
 
     private List<String> scenarioLog;
 
-    public MainModule() {
+    public MainModule(MainActivity activity) {
+      super(activity);
       scenarioLog = new ArrayList<>();
     }
 

@@ -25,11 +25,12 @@ public interface SettingComponent extends ActivityComponent<SettingActivity> {
   }
 
   @Module
-  class SettingModule extends ActivityModule {
+  class SettingModule extends ActivityModule<SettingActivity> {
 
     private List<String> scenarioLog;
 
-    public SettingModule() {
+    public SettingModule(SettingActivity activity) {
+      super(activity);
       scenarioLog = new ArrayList<>();
     }
 

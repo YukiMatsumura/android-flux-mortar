@@ -62,8 +62,8 @@ public class SettingActivity extends RxAppCompatActivity {
     MortarScope scenarioScope = findChild(getApplicationContext(), SCOPE_NAME);
     if (scenarioScope == null) {
       SettingComponent settingComponent =
-          DaggerService.<SettingComponent.Builder>getComponentBuilder(this,
-              SettingActivity.class).activityModule(new SettingModule()).build();
+          DaggerService.<SettingComponent.Builder>getComponentBuilder(this).activityModule(
+              new SettingModule(this)).build();
       scenarioScope = buildChild(getApplicationContext()).withService(DaggerService.SERVICE_NAME,
           settingComponent).build(SCOPE_NAME);
     }

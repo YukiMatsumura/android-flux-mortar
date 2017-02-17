@@ -19,8 +19,6 @@ public class App extends Application {
 
   public static final String SCOPE_NAME = App.class.getName();
 
-  @Inject Map<Class<? extends Activity>, ActivityComponentBuilder> activityComponentBuilder;
-
   private MortarScope rootScope;
 
   @Override public void onCreate() {
@@ -35,9 +33,5 @@ public class App extends Application {
 
   @Override public Object getSystemService(String name) {
     return rootScope.hasService(name) ? rootScope.getService(name) : super.getSystemService(name);
-  }
-
-  public ActivityComponentBuilder activityComponentBuilder(Class<? extends Activity> activity) {
-    return activityComponentBuilder.get(activity);
   }
 }
