@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.yuki312.orientationsample.App;
 import com.yuki312.orientationsample.core.flux.Dispatcher;
+import com.yuki312.orientationsample.main.MainComponent;
+import com.yuki312.orientationsample.setting.SettingComponent;
 import com.yuki312.orientationsample.setting.SettingStore;
 import dagger.Component;
 import dagger.Module;
@@ -21,6 +23,10 @@ public interface AppComponent {
   App application();
 
   void inject(App app);
+
+  MainComponent.Builder mainComponentBuilder();
+
+  SettingComponent.Builder settingComponentBuilder();
 
   @Module
   class AppModule {
