@@ -43,19 +43,16 @@ public abstract class ActivityBindingModule {
 
 このモジュールは親コンポーネントの`@Component(modules=...)`に定義することで, 親コンポーネントに属し,
  親コンポーネントと子コンポーネントの関係を築く橋渡し役になります.  
-これは, 昔で言うところの`Component.plus`処理相当にあたります.  
-重要なポイントは親コンポーネントがサブコンポーネントの詳細（クラス）を知らなくて済むという点です.  
+
 
 ```java
 @Singleton
 @Component(modules = {AppModule.class, ActivityBindingModule.class})
-public interface AppComponent {
-  // 従来の plus(MainComponent subcomponent); な処理はもういらない ;)
-}
+public interface AppComponent { … }
 ```
 
-この方法を使う場合, `@Module(subcomponents={...})`で指定したサブコンポーネントをどのように構築するのかを定義する必要があります.  
-サブコンポーネントの内部インタフェースとしてビルダーを新たに定義し, これに`@Component.Builder`のアノテーション をつけた定義します.  
+この方法を使う場合 `@Module(subcomponents={...})`で指定したサブコンポーネントをどのように構築するのかも定義する必要があります.  
+サブコンポーネントの内部インタフェースとしてビルダーを新たに宣言し, これに`@Component.Builder`アノテーションをつけます.  
 （サブ）コンポーネントビルダーには[いくつかの実装ルールがある](https://google.github.io/dagger/api/latest/dagger/Subcomponent.Builder.html)のでそれに従います.  
 
 ```java
@@ -67,7 +64,7 @@ public interface MainComponent {
   }
 ```
 
-サブコンポーネントのビルダーはDaggerによってプライベートクラスとして自動生成されます.  必要なビルダーは`@Inject`などで取得します.  
+サブコンポーネントのビルダーはDaggerによってプライベートなインナークラスとして自動生成されます.  必要なビルダーは`@Inject`などでインジェクションさせます.  
 
 ```java
 public class App extends Application {
@@ -85,22 +82,23 @@ public class App extends Application {
   }
 ```
 
-ここまでで, サブコンポーネント（厳密には親コンポーネント）が抱えていた親子間の密結合問題を解消できました.  
-しかし, 今度はコンポーネントビルダーを取得するクラス（上の例で言えばアプリケーションクラス）が各サブコンポーネントと密結合してしまいました.  
-このままでは, サブコンポーネントが増えるとアプリケーションクラスにまで手が入ってしまいます.  
-この次は, マルチバインディングの機能を使ってこの問題に対処します. 
+ここまでの変更で, 親コンポーネントが抱えていたサブコンポーネントとの密結合関係がコンポーネントビルダーとの密結合関係に変わりました.  
+まだ, 親コンポーネントはサブコンポーネントのことを知っている状態で, サブコンポーネントが増えるとアプリケーションクラスもあわせて修正する必要があります.  
+
+
+次はマルチバインディングの機能を使ってこの問題に対処します. 
 
 
 ### Multibinding. コンポーネントマップの自動生成
 
 Dagger2.4から, 生成したオブジェクトをコレクションにバインドするマルチバインディング機能が追加されました.  
 これにより, プリセット状態の`Set`や`Map`をインジェクションできるようになりました.  
-今回はこのマルチバインディングを使ってサブコンポーネントビルダーの`Map`コレクションを作り, サブコンポーネントを柔軟に追加できるように改良していきます.  
+今回はこのマルチバインディングを使ってサブコンポーネントビルダーのマップコレクションを作り, 親コンポーネントとコンポーネントビルダーの関係を疎にし, サブコンポーネントを柔軟に追加できるように改良していきます.  
 
-まずはじめに, マルチバインディングマップへ格納するための`Key`と`Value`を決めておきます.  
-Androidではコンポーネットを`Activity`の単位で分割することが多いので`Key`には`Activity`のクラスオブジェクトを格納し, `Value`にはコンポーネントビルダーを格納することにします.  
+まずはじめに, マルチバインディングでマップへ格納するための`Key`と`Value`を決めておきます.  
+Androidではコンポーネットをアクティビティ単位で分割することが多いので`Key`にはアクティビティのクラスオブジェクトを格納し, `Value`にはコンポーネントビルダーを格納することにします.  
 
-アプリケーションクラスが各`Activity`の詳細を知らなくてもいいように, `Activity`に直接関わるコンポーネントとモジュールを抽象化した`ActivityComponent`インタフェースと`ActivityModule`インタフェースを作成します. いまはこれらをマーカーインタフェースとして宣言しておきます.  
+アプリケーションクラスが各アクティビティの詳細を知らなくてもいいように, アクティビティに直接関わるコンポーネントを抽象化した`ActivityComponent`インタフェースとモジュールを抽象化した`ActivityModule`インタフェースを定義します. これらはまだマーカーインタフェース扱いですが後々メソッドを定義していきます.  
 
 ```java
 public interface ActivityComponent {
@@ -121,7 +119,7 @@ public interface MainComponent extends ActivityComponent<MainActivity> {
 ```
 
 コンポーネントビルダに関しても抽象化します.  
-上記で定義したインタフェースを使って, `ActivityModule`を受け取り`ActivityComponent`をビルドして返すビルダーインタフェースを定義します.  
+上記で定義したインタフェースをで`ActivityModule`を受け取り, `ActivityComponent`を構築して返すビルダーインタフェースを定義します.  
 
 ```java
 public interface ActivityComponentBuilder<M extends ActivityModule, C extends ActivityComponent> {
@@ -138,11 +136,11 @@ interface Builder extends ActivityComponentBuilder<MainModule, MainComponent> {
 
 アプリがアクティビティコンポーネントを取得したい場合の手順は次の通りです.  
 
- 1. `ActivityComponentBuilder`を実装したコンポーネントビルダを取得
- 2. 必要な`ActivityModule`をビルダに設定する
- 3. `build`メソッドで`ActivityComponent`をビルドして取得
+ 1. `ActivityComponentBuilder`の実装クラスにあたるビルダーインスタンスを取得
+ 2. 必要な`ActivityModule`をビルダーに設定する
+ 3. `build`メソッドで`ActivityComponent`を構築してコンポーネントインスタンスを取得
 
-今時点ではまだコンポーネントビルダを取得するために具体的なクラス名を指定する必要があります.  
+今時点ではまだコンポーネントビルダーを取得するためにアプリケーションクラスは具体的なクラス名を指定する必要があります.  🐒ここ、AppComponentにプロバイダ指定する方法が妥当じゃない？
 
 ```java
 public class App extends Application {
@@ -321,4 +319,3 @@ Daggerによってスコープ制御されているコンポーネントをMorta
 ⭐️押したくなるGitHubページへのリンク
 
 以上です.  
-
