@@ -1,9 +1,9 @@
 ### はじめに
 
-2017年に入って[Dagger2](https://google.github.io/dagger/)もバージョン2.9を迎えました（そんな[v.2.9.0には問題がある](https://github.com/google/dagger/issues/577)のでご注意を）  
-Androidでも使われることが多いDIフレームワークですが, バージョンを重ねるごとに便利なAPIが増えています.  
+2017年に入って[Dagger2](https://google.github.io/dagger/)もバージョン2.9を迎えました.  
+Androidでも使われることが多いDIフレームワークも, バージョンを重ねるごとに便利なAPIが増えています.  
 
-本稿はAndroidアプリを例に, `Subcomponent`と`Activity`に依存する`Component`へのインジェクション周りについて, 過去のAPIを使用した方法と, 最近のAPIを使用する方法とで比較を行い, どのようなAPIが使えるようになっているのかを例示したいと思います.  
+本稿はAndroidアプリを例に, `Subcomponent`と`Activity`に依存する`Component`へのインジェクションについて, 過去のAPIを使用した方法と, 新しいAPIを使用する方法とで比較を行い, どのようなAPIが使えるようになっているのかを例示したいと思います.  
 
 今回紹介する内容＋αと動くソースコードはGitHubにもアップしています.  
 そちらもあわせてご覧ください :)  
@@ -11,28 +11,29 @@ Androidでも使われることが多いDIフレームワークですが, バー
 ⭐️押したくなるGitHubページへのリンク
 
 
-### Subcomponent. 親と子の密結合関係
+### Subcomponent. 親と子の密結合問題
 
-Androidでは, Daggerの`Component`を`Activity`の単位で分割することが多いと思います（e.g. `MainActivityComponent`, `SettingActivityComponent`, etc.）  
-アプリケーションスコープのオブジェクトを扱う場合や, 他の`ActivityComponent`からも共通的に参照されるオブジェクトがある場合は`Subcomponent`としてこれを定義することがあります.  
-`Subcomponent`の仕組みは各々の`ActivityComponent`が持つ共通部分をまとめて定義したり, スコープの観点からみた"親-子"を定義したりするのに便利です.  
+Androidでは, コンポーネントをアクティビティの単位で分割することがよくあります（e.g. `MainActivityComponent`, `SettingActivityComponent`, etc.）  
+そのようなコンポーネントがアプリケーションスコープのオブジェクトを参照する場合や, 他のコンポーネントからも参照される共有オブジェクトを参照する場合は`Subcomponent`として定義される場合があります.  
+サブコンポーネントの仕組みは, それぞれのアクティビティコンポーネントの共通部分をまとめて定義したり, スコープの観点からみた"親-子"を定義したりするのに便利です.  
 
-ただ, 古いバージョンのDaggerでは`Subcomponent`に依存される親コンポーネントは, 子コンポーネントのクラスを知っている必要があり親と子の結合度が高くなる問題があります.  
+ただ, 古いバージョンのDaggerではサブコンポーネントに依存される親コンポーネントは, サブコンポーネントのクラスを知っている必要があり親と子の結合度が高くなる問題がありました.  
 
 ```java
 @Component(...)
 public interface AppComponent {
-  // 親であるAppComponentは子になるコンポーネントを全て知っておかないといけない:(
+  // 親であるAppComponentは子にあたるコンポーネントを全て知っておく必要がある :(
   MainActivityComponent plus(MainActivityModule module);
   SettingActivityComponent plus(SettingActivityModule module);
 ```
 
 この問題はDagger2.7で追加された[`Module`の`subcomponent`属性](https://google.github.io/dagger/api/latest/dagger/Component.Builder.html)を使うことで解決できます.  
 
+
 #### Module.subcomponents
  
- `Module`の`subcomponent`属性はサブコンポーネントの親を指定するための新しい手段を提供してくれます.  
- `subcomponent`にはサブコンポーネントクラスのリストを定義し, `@Module`アノテーションの属性として指定します.  
+ `@Module`の`subcomponent`属性はサブコンポーネントの親を指定するための新しい手段を提供します.  
+ `subcomponent`には対象のサブコンポーネントクラスを定義します.  
 
 ```java
 @Module(subcomponents = {MainComponent.class, SubComponent.class})
