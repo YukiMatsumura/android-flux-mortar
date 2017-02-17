@@ -18,10 +18,10 @@ public class DaggerService {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T extends ActivityComponentBuilder> T getComponentBuilder(@NonNull Context context,
-      Class<? extends Activity> activity) {
+  public static <T extends ActivityComponentBuilder> T getComponentBuilder(
+      @NonNull Context context, Class<? extends Activity> activity) {
     // noinspection ResourceType
     return (T) ((AppComponent) context.getApplicationContext()
-        .getSystemService(SERVICE_NAME)).application().activityComponentBuilder(activity);
+        .getSystemService(SERVICE_NAME)).activityComponentBuilders().get(activity);
   }
 }

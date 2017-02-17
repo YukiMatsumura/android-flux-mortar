@@ -1,5 +1,6 @@
 package com.yuki312.orientationsample.core.di;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.yuki312.orientationsample.App;
@@ -8,6 +9,7 @@ import com.yuki312.orientationsample.setting.SettingStore;
 import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
+import java.util.Map;
 import javax.inject.Singleton;
 
 /**
@@ -21,6 +23,8 @@ public interface AppComponent {
   App application();
 
   void inject(App app);
+
+  Map<Class<? extends Activity>, ActivityComponentBuilder> activityComponentBuilders();
 
   @Module
   class AppModule {
