@@ -41,21 +41,21 @@ public abstract class ActivityBindingModule {
 }
 ```
 
-このモジュールは親コンポーネントの`modules`に定義されることで, 親コンポーネントに属することになり,
- 結果的に親コンポーネントと子コンポーネントの関係を築くことになります.  
-これは, 親コンポーネントとの関係を築く, 過去の`Component.plus`処理相当に代わる方法です.  
-重要なポイントは親コンポーネントがサブコンポーネントの詳細（クラス名）を知らなくて済むというところです.  
+このモジュールは親コンポーネントの`@Component(modules=...)`に定義することで, 親コンポーネントに属し,
+ 親コンポーネントと子コンポーネントの関係を築く橋渡し役になります.  
+これは, 昔で言うところの`Component.plus`処理相当にあたります.  
+重要なポイントは親コンポーネントがサブコンポーネントの詳細（クラス）を知らなくて済むという点です.  
 
 ```java
 @Singleton
 @Component(modules = {AppModule.class, ActivityBindingModule.class})
 public interface AppComponent {
-  // 従来の plus(MainComponent subcomponent); な処理はもういらない;)
+  // 従来の plus(MainComponent subcomponent); な処理はもういらない ;)
 }
 ```
 
-この方法を使う場合, `@Module(subcomponents={...})`で指定したサブコンポーネントをどのように構築するのかをDaggerに教える必要があります.  
-サブコンポーネントの内部インタフェースとしてコンポーネントのビルダを新たに定義し, これに`Component.Builder`のアノテーション をつければ準備完了です.  
+この方法を使う場合, `@Module(subcomponents={...})`で指定したサブコンポーネントをどのように構築するのかを定義する必要があります.  
+サブコンポーネントの内部インタフェースとしてビルダーを新たに定義し, これに`@Component.Builder`のアノテーション をつけた定義します.  
 （サブ）コンポーネントビルダーには[いくつかの実装ルールがある](https://google.github.io/dagger/api/latest/dagger/Subcomponent.Builder.html)のでそれに従います.  
 
 ```java
