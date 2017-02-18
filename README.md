@@ -55,3 +55,6 @@ public interface AppComponent {
 component.injectMembers(activity);
 ```
 
+さらに詳しい情報は下記のブログをご覧ください.  
+
+[![Goto Blog](https://github.com/YukiMatsumura/android-flux-mortar/blob/master/art/gotoblog.png?raw=true)](http://yuki312.blogspot.jp/2017/02/dagger2-multibindingcomponent.html)
