@@ -1,5 +1,7 @@
-package com.yuki312.orientationsample.core.di;
+package com.yuki312.orientationsample;
 
+import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
+import com.yuki312.orientationsample.core.di.ActivityMapKey;
 import com.yuki312.orientationsample.main.MainActivity;
 import com.yuki312.orientationsample.main.MainComponent;
 import com.yuki312.orientationsample.setting.SettingActivity;

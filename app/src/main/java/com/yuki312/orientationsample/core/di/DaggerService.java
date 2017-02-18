@@ -3,6 +3,7 @@ package com.yuki312.orientationsample.core.di;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.yuki312.orientationsample.AppComponent;
 
 /**
  * Created by YukiMatsumura on 2017/02/15.

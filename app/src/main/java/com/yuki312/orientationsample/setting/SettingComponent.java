@@ -5,7 +5,6 @@ import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
 import com.yuki312.orientationsample.core.di.ActivityModule;
 import com.yuki312.orientationsample.core.di.ScenarioScope;
 import com.yuki312.orientationsample.core.flux.Dispatcher;
-import com.yuki312.orientationsample.main.MainActivity;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;

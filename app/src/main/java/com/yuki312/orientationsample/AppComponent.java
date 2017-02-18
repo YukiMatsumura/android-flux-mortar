@@ -1,9 +1,9 @@
-package com.yuki312.orientationsample.core.di;
+package com.yuki312.orientationsample;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.yuki312.orientationsample.App;
+import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
 import com.yuki312.orientationsample.core.flux.Dispatcher;
 import com.yuki312.orientationsample.setting.SettingStore;
 import dagger.Component;

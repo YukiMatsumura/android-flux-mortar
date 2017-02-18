@@ -1,14 +1,8 @@
 package com.yuki312.orientationsample;
 
-import android.app.Activity;
 import android.app.Application;
-import com.yuki312.orientationsample.core.di.AppComponent;
-import com.yuki312.orientationsample.core.di.ActivityComponentBuilder;
-import com.yuki312.orientationsample.core.di.AppComponent.AppModule;
-import com.yuki312.orientationsample.core.di.DaggerAppComponent;
+import com.yuki312.orientationsample.AppComponent.AppModule;
 import com.yuki312.orientationsample.core.di.DaggerService;
-import java.util.Map;
-import javax.inject.Inject;
 import mortar.MortarScope;
 
 /**
