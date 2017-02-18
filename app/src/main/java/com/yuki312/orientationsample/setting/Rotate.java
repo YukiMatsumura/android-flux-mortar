@@ -8,9 +8,6 @@ public class Rotate {
 
   public static final boolean DEFAULT_VALUE = false;
 
-  private boolean enable = DEFAULT_VALUE;
-
   public Rotate() {
-
   }
 }
