@@ -1,0 +1,26 @@
+general:
+  build_dir: ./
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
+
+dependencies:
+  override:
+    - echo y | android update sdk --no-ui --all --filter "extra-google-m2repository,extra-android-m2repository,android-25,build-tools-25.0.2"
+
+test:
+  override:
+    - ./gradlew :app:build
+
+  post:
+    - cp -r ./app/build/outputs/* $CIRCLE_ARTIFACTS
+
+# deployment:
+#  master:
+#    branch: master
+#    commands:
+#      # Deploygate command here.
+#      - ./gradlew :app:assembleDebug
+#      - ./gradlew :app:uploadDeployGateDebug
