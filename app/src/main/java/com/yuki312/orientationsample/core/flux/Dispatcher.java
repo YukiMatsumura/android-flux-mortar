@@ -1,5 +1,6 @@
 package com.yuki312.orientationsample.core.flux;
 
+import com.yuki312.orientationsample.core.flux.action.Action;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;

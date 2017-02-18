@@ -1,9 +1,9 @@
 package com.yuki312.orientationsample.setting;
 
 import android.support.annotation.NonNull;
-import com.yuki312.orientationsample.core.flux.Action;
-import com.yuki312.orientationsample.core.flux.ActionCreator;
-import com.yuki312.orientationsample.core.flux.BoolValueChangeAction;
+import com.yuki312.orientationsample.core.flux.action.Action;
+import com.yuki312.orientationsample.core.flux.action.ActionCreator;
+import com.yuki312.orientationsample.core.flux.action.BoolChangeAction;
 import com.yuki312.orientationsample.core.flux.Dispatcher;
 
 /**
@@ -21,6 +21,6 @@ public class SettingActionCreator extends ActionCreator {
   }
 
   public void changeRotateEnable(boolean enable) {
-    send(new BoolValueChangeAction(Id.RotateChange, enable));
+    send(new BoolChangeAction(Id.RotateChange, enable));
   }
 }

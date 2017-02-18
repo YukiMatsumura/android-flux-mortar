@@ -3,7 +3,7 @@ package com.yuki312.orientationsample.setting;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.yuki312.orientationsample.core.flux.Dispatcher;
-import com.yuki312.orientationsample.core.flux.ValueChangeAction;
+import com.yuki312.orientationsample.core.flux.action.ChangeAction;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -31,7 +31,7 @@ public class SettingStore {
     Disposable disposable;
     disposable = dispatcher.stream()
         .filter(a -> a.id == SettingActionCreator.Id.RotateChange)
-        .cast(ValueChangeAction.class)
+        .cast(ChangeAction.class)
         .map(it -> (Boolean) it.value)
         .subscribe(rotate::onNext);
     compositeDisposable.add(disposable);
