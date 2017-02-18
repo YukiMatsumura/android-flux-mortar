@@ -1,7 +1,5 @@
-# 🎩 SIMPLE FLUX, TINY MORTAR, SWEET DAGGER2
-
-[![Goto Blog](https://github.com/YukiMatsumura/android-flux-mortar/blob/master/art/gotoblog.png?raw=true)](http://yuki312.blogspot.jp/) [![CircleCI](https://circleci.com/gh/YukiMatsumura/android-flux-mortar.svg?style=svg)](https://circleci.com/gh/YukiMatsumura/android-flux-mortar)  
-
+<img  src="https://github.com/YukiMatsumura/android-flux-mortar/blob/master/art/android_robot.png?raw=true" align="right" />
+# SIMPLE FLUX, TINY MORTAR, SWEET DAGGER2
 
 ## 🔰 WHAT'S THIS ?
 
@@ -67,7 +65,7 @@ component.injectMembers(activity);
 
 さらに詳しい情報は下記のブログをご覧ください.  
 
- - [Dagger2. MultibindingでComponentを綺麗に仕上げる](http://yuki312.blogspot.jp/2017/02/dagger2-multibindingcomponent.html)
+[![Goto Blog](https://github.com/YukiMatsumura/android-flux-mortar/blob/master/art/gotoblog.png?raw=true)](http://yuki312.blogspot.jp/) [Dagger2. MultibindingでComponentを綺麗に仕上げる](http://yuki312.blogspot.jp/2017/02/dagger2-multibindingcomponent.html)
 
 
 ## 🍣 FLUX
@@ -104,3 +102,15 @@ Mortarはそんなアクティビティのライフサイクルの隙間を埋�
  - [rejasupotaro/kvs-schema](https://github.com/rejasupotaro/kvs-schema)
  - [google/dagger](https://github.com/google/dagger)
  - [evant/gradle-retrolambda](https://github.com/evant/gradle-retrolambda)
+
+## 🎩 LICENSE
+
+[MIT License Copyright (c) 2017 Yuki312](https://github.com/YukiMatsumura/android-flux-mortar)
+
+[![CircleCI](https://circleci.com/gh/YukiMatsumura/android-flux-mortar.svg?style=svg)](https://circleci.com/gh/YukiMatsumura/android-flux-mortar)  
+
+---
+
+<center>
+<i>Android is a trademark of Google Inc. The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.</i>
+</center>
