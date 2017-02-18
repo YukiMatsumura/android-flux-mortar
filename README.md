@@ -1,4 +1,4 @@
-# SIMPLE FLUX, TINY MORTAR, SWEET DAGGER2
+# SIMPLE FLUX, TINY MORTAR, SWEET DAGGER2 🎩
 
 Androidでは画面回転によってアクティビティが破棄・再生成されます.  
 よくある問題で, データに期待するライフサイクルよりアクティビティのライフサイクルの方が短いため, インスタンスの保存と復元が必要になります.  
@@ -10,7 +10,7 @@ Androidには標準で`savedInstanceState`の仕組みが用意されていま�
  - StoreのライフサイクルをMortarで管理
  - スコープの定義をDaggerで宣言
 
-## DAGGER2 
+## DAGGER2
 
 本アプリでは, Dagger2のアクティビティコンポーネントをサブコンポーネントとして定義します.  
 また, サブコンポーネントは[マルチバインディング機能](https://google.github.io/dagger/multibindings.html)を使って親コンポーネントを汚さない工夫をしてあります.  
