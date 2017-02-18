@@ -64,22 +64,14 @@ public interface MainComponent {
   }
 ```
 
-サブコンポーネントのビルダーはDaggerによってプライベートなインナークラスとして自動生成されます.  必要なビルダーは`@Inject`などでインジェクションさせます.  
+サブコンポーネントのビルダーはDaggerによってプライベートなインナークラスとして自動生成されます.  
+必要なビルダーは`ActivityBindingModule`をインストールした親コンポーネントから提供されます.  
 
 ```java
-public class App extends Application {
-  @Inject MainComponent.Builder mainComponentBuilder;
-  @Inject SettingComponent.Builder settingComponentBuilder;
-
-  ...
-
-  public MainComponent.Builder mainComponentBuilder() {
-    return mainComponentBuilder;
-  }
-
-  public SettingComponent.Builder settingComponentBuilder() {
-    return settingComponentBuilder;
-  }
+@Component(modules = { AppComponent.AppModule.class, ActivityBindingModule.class })
+public interface AppComponent {
+  MainComponent.Builder mainComponentBuilder();
+  SettingComponent.Builder settingComponentBuilder();
 ```
 
 ここまでの変更で, 親コンポーネントが抱えていたサブコンポーネントとの密結合関係がコンポーネントビルダーとの密結合関係に変わりました.  
@@ -118,7 +110,7 @@ public interface MainComponent extends ActivityComponent<MainActivity> {
 }
 ```
 
-コンポーネントビルダに関しても抽象化します.  
+コンポーネントビルダーに関しても抽象化します.  
 上記で定義したインタフェースをで`ActivityModule`を受け取り, `ActivityComponent`を構築して返すビルダーインタフェースを定義します.  
 
 ```java
@@ -214,11 +206,12 @@ public interface AppComponent {
   Map<Class<? extends Activity>, ActivityComponentBuilder> activityComponentBuilders();
 ```
 
-こうすることで, Daggerはマルチバインディングによってアクティビティコンポーネントのマップを構築し, それを`activityComponentBuilders()`経由で取得できるようになります.  
+これによって, Daggerがマルチバインディングによってコンポーネントビルダーのマップを構築し, それを`activityComponentBuilders()`メソッド経由で提供するようになりました.  
+マルチバインディング適用前と違う点は, もはや`AppComponent`がサブコンポーネント（`MainComponentBuilder` etc.）について知らなくてよくなったという点です.  
+今や`AppComponent`は新しく定義した抽象化されたビルダー`ActivityComponentBuilder`のことしか知らなくてよくなりました.  
+これでついに親コンポーネントがサブコンポーネントから独立しました Yay!  
 
-これでついにアプリケーションクラスから`Activity`の詳細な情報を排除することができました. Yay!  
-
-アクティビティとサブコンポーネントが追加になってもアプリケーションクラスを変更する理由はもはやありません.  
+アクティビティとサブコンポーネントが追加されてもアプリケーションクラスを変更する理由はもはやありません.  
 アクティビティに関係するサブコンポーネントに追加・変更がある場合の修正は`ActivityBindingModule`に閉じています.  
 
 
@@ -226,7 +219,7 @@ public interface AppComponent {
 
 これで一通りの実装は完了ですが, もう一歩進めましょう.  
 
-アクティビティのコンポーネントには`inject`メソッドを生やすことがよくあります.  
+アクティビティのコンポーネントには`inject`メソッドを定義することがよくあります.  
 なので`ActivityComponent`にこれを定義します.  
 
 ```java
@@ -234,7 +227,7 @@ public interface ActivityComponent<T extends Activity> extends MembersInjector<T
 }
 ```
 
-もうひとつ, `ActivityModule`にはアクティビティインスタンスを保持させることがよくあるので, その定義をしておきます.  
+もうひとつ, `ActivityModule`にはアクティビティインスタンスを保持させることがよくあるので, その定義を追加しておきます.  
 
 ```java
 @Module
@@ -253,19 +246,23 @@ public abstract class ActivityModule<T extends Activity> {
 
 アクティビティコンポーネントを取得するときは, 下記の手順です.  
 
- 1. `ActivityComponentBuilder`を実装したコンポーネントビルダを取得
- 2. 必要な`ActivityModule`をビルダに設定する
- 3. `build`メソッドで`ActivityComponent`をビルドして取得
+ 1. `ActivityComponentBuilder`の実装にあたるビルダーインスタンスを取得
+ 2. 必要な`ActivityModule`をビルダーに設定する
+ 3. `build`メソッドで`ActivityComponent`を構築してコンポーネントインスタンスを取得
 
-`ActivityComponentBuilder`を取得するメソッドは以前と同様, 親コンポーネントにあたる`AppComponent`に定義されているので, 下記の要領で取得します.  
+`ActivityComponentBuilder`を取得するメソッドは以前と同様, 親コンポーネントの`AppComponent`に定義されているため下記の要領で取得します.  
 
 ```java
 Map<Class<? extends Activity>, ActivityComponentBuilder> map =
-    ((AppComponent) context.getApplicationContext().activityComponentBuilders();
-map.get(activity.getClass());
+    ((AppComponent) context.getApplicationContext().activityComponentBuilders());
+MainComponent.Builder builder = (MainComponent.Builder)(map.get(activity.getClass()));
+MainComponent component = builder.activityModule(new MainModule(activity)).build();
 ```
 
-いい感じですね. ここまでで一旦主要なクラス達を整理しておきます.  
+いい感じですね. コンポーネントビルダーが取得できればコンポーネントを構築すれば目的のコンポーネントが取得できます.  
+コンポーネントが取得できれば, `injectMembers(activity)`で依存性を注入できます.  
+
+それでは最後に主要なクラス達を整理しておきます.  
 
 ```java
 // アクティビティのコンポーネントを表現するインタフェース
@@ -305,17 +302,18 @@ public interface AppComponent {
 
 // アクティビティコンポーネントを取得するコード
 Map<Class<? extends Activity>, ActivityComponentBuilder> map =
-    ((AppComponent) context.getApplicationContext().activityComponentBuilders();
-map.get(activity.getClass());
+    ((AppComponent) context.getApplicationContext().activityComponentBuilders());
+MainComponent.Builder builder = (MainComponent.Builder)(map.get(activity.getClass()));
+MainComponent component = builder.activityModule(new MainModule(activity)).build();
+
+// 依存性を注入
+component.injectMembers(activity);
 ```
 
-Daggerの新しいAPIを使ってアクティビティコンポーネントをスマートに取得することができました :)
+Daggerの新しいAPIを使ってアクティビティコンポーネントを取得することができました :)  
+さらに, もう一歩進めてDaggerによってスコープ制御されているコンポーネントをMortarライブラリで更に使いやすくする方法がありますが, これは次の機会にします.  
 
-さらに, さらに, もう一歩進めた内容を次稿に載せます.  
-Daggerによってスコープ制御されているコンポーネントをMortarライブラリで更に使いやすくする方法です.  
-
-今回紹介した内容＋αと動くソースコードをGitHubにもアップしています.  
-そちらもあわせてご覧ください :)  
+今回紹介した内容＋αと動くソースコードをGitHubにもアップしています. そちらもあわせてご覧ください :)  
 
 ⭐️押したくなるGitHubページへのリンク
 
