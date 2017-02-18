@@ -23,6 +23,7 @@ public class LauncherActivity extends AppCompatActivity {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(t -> {
           MainActivity.startActivity(this);
+          finish();
         });
   }
 }
