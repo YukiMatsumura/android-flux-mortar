@@ -38,10 +38,8 @@ public class MainActivity extends RxAppCompatActivity {
     ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     binding.button.setOnClickListener(v -> SettingActivity.startActivity(this));
 
-    // DI
     DaggerService.<MainComponent>getComponent(this).injectMembers(this);
 
-    // 画面回転の設定値が変更されたらそれに従ったOrientation値をリクエストする.
     settingStore.rotate().compose(bindToLifecycle()).subscribe(on -> {
       setRequestedOrientation(on ? ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
           : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);

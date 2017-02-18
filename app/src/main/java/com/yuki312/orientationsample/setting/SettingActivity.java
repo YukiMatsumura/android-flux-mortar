@@ -35,7 +35,6 @@ public class SettingActivity extends RxAppCompatActivity {
 
     ActivitySubBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_sub);
 
-    // DI
     DaggerService.<SettingComponent>getComponent(this).injectMembers(this);
 
     settingStore.rotate().compose(bindToLifecycle()).subscribe(binding::setRotation);
