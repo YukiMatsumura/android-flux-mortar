@@ -2,6 +2,7 @@ package com.yuki312.orientationsample.setting;
 
 import com.rejasupotaro.android.kvs.annotations.Key;
 import com.rejasupotaro.android.kvs.annotations.Table;
+import com.yuki312.orientationsample.setting.model.Rotate;
 
 @Table(name = "setting")
 public class SettingSchema {
