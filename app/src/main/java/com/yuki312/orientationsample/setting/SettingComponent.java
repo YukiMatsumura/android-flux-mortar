@@ -34,8 +34,8 @@ public interface SettingComponent extends ActivityComponent<SettingActivity> {
     }
 
     @ScenarioScope @Provides
-    public SettingActionCreator provideSettingActionCreator(Dispatcher dispatcher) {
-      return new SettingActionCreator(dispatcher);
+    public SettingActions provideSettingActionCreator(Dispatcher dispatcher) {
+      return new SettingActions(dispatcher);
     }
 
     @ScenarioScope @Provides public List<String> provideScenarioLog() {

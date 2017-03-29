@@ -46,10 +46,5 @@ public interface AppComponent {
     @Singleton @Provides public Context provideApplicationContext() {
       return app.getApplicationContext();
     }
-
-    @Singleton @Provides
-    public SettingStore provideSettingStore(Context app, Dispatcher dispatcher) {
-      return new SettingStore(app.getApplicationContext(), dispatcher);
-    }
   }
 }

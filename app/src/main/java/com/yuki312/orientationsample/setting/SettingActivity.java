@@ -22,7 +22,7 @@ public class SettingActivity extends RxAppCompatActivity {
 
   public static final String SCOPE_NAME = SettingActivity.class.getName();
 
-  @Inject SettingActionCreator settingAction;
+  @Inject SettingActions settingAction;
   @Inject SettingStore settingStore;
   @Inject List<String> log;
 
@@ -40,7 +40,7 @@ public class SettingActivity extends RxAppCompatActivity {
     settingStore.rotate().compose(bindToLifecycle()).subscribe(binding::setRotation);
 
     binding.rotation.setOnCheckedChangeListener(
-        (v, isChecked) -> settingAction.changeRotateEnable(isChecked));
+        (v, isChecked) -> settingAction.setLandscapeMode(isChecked));
 
     log.add(this.toString());
     Toast.makeText(this, "log=" + log.size() + " fm." + this, Toast.LENGTH_SHORT).show();

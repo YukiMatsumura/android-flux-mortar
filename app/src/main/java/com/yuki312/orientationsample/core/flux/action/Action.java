@@ -13,38 +13,18 @@ import java.util.Map;
 public class Action {
 
   @NonNull private final ActionId id;
-  @NonNull private Map<Enum, Object> param;
+  @NonNull private final Object param;
 
-  public enum Debug {
-    Trace
-  }
-
-  public Action(@NonNull ActionId id) {
+  public Action(@NonNull ActionId id, @NonNull Object param) {
     this.id = Objects.nonNull(id);
-    this.param = new LinkedHashMap<>();
+    this.param = Objects.nonNull(param);
   }
 
   @NonNull public ActionId id() {
     return id;
   }
 
-  public Action putValue(@NonNull Enum k, @Nullable Object v) {
-    param.put(Objects.nonNull(k), v);
-    return this;
-  }
-
-  public Object get(@NonNull Enum k) {
-    return param.get(k);
-  }
-
-  public Object get(@NonNull Enum k, Object defaultValue) {
-    Object o;
-    return ((o = param.get(k)) != null || param.containsKey(k)) ? o : defaultValue;
-  }
-
-  // for debug only
-  public Action track(String tag) {
-    putValue(Debug.Trace, new Throwable("[DEBUG TRACE]" + tag).fillInStackTrace());
-    return this;
+  @NonNull public Object param() {
+    return param;
   }
 }
